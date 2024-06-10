@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react"
 import { Helmet } from "react-helmet"
 
@@ -8,6 +9,14 @@ function Login() {
     const handleInput = (e) => {
         setInput(prevState => ({ ...prevState, [e.target.name]: e.target.value }))
         console.log(input)
+    }
+
+    const handleLogin = (e) => {
+        e.preventDefault()
+        axios.post('http://127.0.0.1:8000/api/login', input)
+            .then(res => {
+                console.log(res.data);
+            })
     }
 
     return (
@@ -38,7 +47,7 @@ function Login() {
                             Check me out
                         </label>
                     </div>
-                    <button type="submit" className="btn btn-primary">
+                    <button onClick={handleLogin} type="submit" className="btn btn-primary">
                         Login
                     </button>
                 </form>
