@@ -5,6 +5,7 @@ import Constants from './../../../Constants';
 
 function Login() {
     const [input, setInput] = useState({});
+    const [loading, setLoading] = useState(false);
 
 
     const handleInput = (e) => {
@@ -12,16 +13,21 @@ function Login() {
     }
 
     const handleLogin = (e) => {
-        e.preventDefault()
+        e.preventDefault() 
+        setLoading(true)       
         axios.post(`${Constants.BASE_URL}/login`, input)
             .then(res => {
+                setLoading(false)
                 localStorage.name = res.data.name
                 localStorage.phone = res.data.phone
                 localStorage.email = res.data.email
                 localStorage.photo = res.data.photo
                 localStorage.token = res.data.token
                 window.location.reload();
+            }).finally(()=>{
+                setLoading(false)
             })
+        
     }
 
     return (
@@ -52,8 +58,8 @@ function Login() {
                             Check me out
                         </label>
                     </div>
-                    <button onClick={handleLogin} type="submit" className="btn btn-primary">
-                        Login
+                    <button disabled={loading} onClick={handleLogin} type="submit" className="btn btn-primary">
+                        {loading ? (<div className="spinner-border spinner-border-sm" role="status"></div>) : ('Login')}
                     </button>
                 </form>
 
