@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react"
 import { Helmet } from "react-helmet"
+import Constants from './../../../Constants';
 
 function Login() {
     const [input, setInput] = useState({});
@@ -8,14 +9,18 @@ function Login() {
 
     const handleInput = (e) => {
         setInput(prevState => ({ ...prevState, [e.target.name]: e.target.value }))
-        console.log(input)
     }
 
     const handleLogin = (e) => {
         e.preventDefault()
-        axios.post('http://127.0.0.1:8000/api/login', input)
+        axios.post(`${Constants.BASE_URL}/login`, input)
             .then(res => {
-                console.log(res.data);
+                localStorage.name = res.data.name
+                localStorage.phone = res.data.phone
+                localStorage.email = res.data.email
+                localStorage.photo = res.data.photo
+                localStorage.token = res.data.token
+                window.location.reload();
             })
     }
 
@@ -26,7 +31,7 @@ function Login() {
             </Helmet>
 
             <div className="d-flex justify-content-center   mt-5 h-100 ">
-                <form className="w-25 card p-3">
+                <form className="w-25 card p-3 shadow">
                     <h2 className="card-title mb-4">Login</h2>
                     <div className="mb-3">
                         <label htmlFor="exampleInputEmail1" className="form-label">

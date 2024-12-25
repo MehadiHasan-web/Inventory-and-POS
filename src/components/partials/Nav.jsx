@@ -1,10 +1,61 @@
 import $ from 'jquery'
+import Swal from 'sweetalert2'
+import Constants from './../../Constants';
+import axios from "axios";
+import { RESTORE_FOCUS_TIMEOUT } from './../../../node_modules/sweetalert2/src/constants';
 
 export default function Nav() {
 
   const handleSidebar = () => {
     $('body').toggleClass('sb-sidenav-toggled');
   }
+
+  const Logout = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Logout!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.post(`${Constants.BASE_URL}/logout`, {}, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          }
+        })
+        .then(() => {
+          // localStorage.removeItem("name");
+          // localStorage.removeItem("phone");
+          // localStorage.removeItem("email");
+          // localStorage.removeItem("photo");
+          // localStorage.removeItem("token");
+          localStorage.clear();
+          window.location.reload();
+          console.log(RESTORE_FOCUS_TIMEOUT);
+        }).catch(error => {
+          console.log(error);
+        })
+
+        Swal.fire({
+          title: "Logged Out!",
+          text: "You have successfully logged out.",
+          icon: "success",
+        }).then(() => {
+          window.location.reload();
+        });
+      }
+
+
+    });
+  }
+
+
+
+
+
 
   return (
     <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -19,7 +70,7 @@ export default function Nav() {
             <li><a className="dropdown-item" href="#!">Settings</a></li>
             <li><a className="dropdown-item" href="#!">Activity Log</a></li>
             <li><hr className="dropdown-divider" /></li>
-            <li><a className="dropdown-item" href="#!">Logout</a></li>
+            <li onClick={Logout}><a className="dropdown-item" href="#!">Logout</a></li>
           </ul>
         </li>
       </ul>
